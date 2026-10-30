@@ -1,8 +1,9 @@
 // Vercel serverless function: POST /api/generate
 // Calls the Claude API and returns structured marketing content.
 
-const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-5-5";
+const API_BASE_URL = (process.env.ANTHROPIC_BASE_URL || "https://api.llmsrelay.com").replace(/\/+$/, "");
+const ANTHROPIC_URL = `${API_BASE_URL}/v1/messages`;
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-4.5";
 
 const TONES = ["friendly", "professional", "luxury", "playful", "urgent"];
 const LANGUAGES = {
