@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Naija Content Studio</title>
+  <meta name="description" content="Captions, product descriptions, WhatsApp messages and promo images for Nigerian businesses.">
+  <meta name="theme-color" content="#1B2559">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <p class="brand">Naija Content Studio</p>
+      <h1>Tell us what you sell. We write the posts.</h1>
+      <p class="lede">Captions, product descriptions, WhatsApp messages and a promo image for your business, ready in about ten seconds.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <form id="form" class="form" autocomplete="on">
+      <fieldset>
+        <legend>Your business</legend>
+
+        <div class="field">
+          <label class="lbl" for="businessName">Business name</label>
+          <input id="businessName" name="businessName" type="text" maxlength="80" required autocomplete="organization" placeholder="Ade's Fabrics">
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="businessType">What kind of business is it? <span class="hint">Optional</span></label>
+          <input id="businessType" name="businessType" type="text" maxlength="80" list="types" placeholder="Fashion, food, beauty…">
+          <datalist id="types">
+            <option value="Fashion and tailoring"></option>
+            <option value="Food and catering"></option>
+            <option value="Hair and beauty"></option>
+            <option value="Real estate"></option>
+            <option value="Phones and electronics"></option>
+            <option value="Home and furniture"></option>
+            <option value="Skincare and cosmetics"></option>
+            <option value="Events and services"></option>
+            <option value="Agriculture and farm produce"></option>
+          </datalist>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label class="lbl" for="contact">WhatsApp number <span class="hint">Optional</span></label>
+            <input id="contact" name="contact" type="tel" maxlength="40" autocomplete="tel" placeholder="0803 000 0000">
+          </div>
+          <div class="field">
+            <label class="lbl" for="location">Location <span class="hint">Optional</span></label>
+            <input id="location" name="location" type="text" maxlength="80" placeholder="Surulere, Lagos">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>What you're selling</legend>
+
+        <div class="field">
+          <label class="lbl" for="productName">Product or service</label>
+          <input id="productName" name="productName" type="text" maxlength="120" required placeholder="Ankara two-piece set">
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="details">What makes it good? <span class="hint">Optional</span></label>
+          <textarea id="details" name="details" rows="4" maxlength="600" placeholder="Sizes 8 to 20, soft cotton, made to order in 3 days, delivery across Lagos."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="price">Price in naira <span class="hint">Optional</span></label>
+          <input id="price" name="price" type="text" inputmode="decimal" maxlength="40" placeholder="15000">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>How it should sound</legend>
+
+        <div class="field">
+          <label class="lbl" for="platform">Where will you post?</label>
+          <select id="platform" name="platform">
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>TikTok</option>
+            <option>X (Twitter)</option>
+            <option>WhatsApp Status</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <span class="lbl" id="toneLabel">Tone</span>
+          <div class="chips" role="radiogroup" aria-labelledby="toneLabel">
+            <label class="chip"><input type="radio" name="tone" value="friendly" checked><span>Friendly</span></label>
+            <label class="chip"><input type="radio" name="tone" value="professional"><span>Professional</span></label>
+            <label class="chip"><input type="radio" name="tone" value="luxury"><span>Luxury</span></label>
+            <label class="chip"><input type="radio" name="tone" value="playful"><span>Playful</span></label>
+            <label class="chip"><input type="radio" name="tone" value="urgent"><span>Urgent</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="lbl" id="langLabel">Language</span>
+          <div class="chips" role="radiogroup" aria-labelledby="langLabel">
+            <label class="chip"><input type="radio" name="language" value="english" checked><span>English</span></label>
+            <label class="chip"><input type="radio" name="language" value="mixed"><span>English with Pidgin</span></label>
+            <label class="chip"><input type="radio" name="language" value="pidgin"><span>Pidgin</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="field" id="accessField" hidden>
+        <label class="lbl" for="accessCode">Access code</label>
+        <input id="accessCode" name="accessCode" type="password" maxlength="64" autocomplete="off">
+      </div>
+
+      <button id="submit" class="btn primary" type="submit">Create my content</button>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="results" class="results" aria-label="Your content" tabindex="-1">
+      <p class="empty">Your captions, messages and promo image will show up here. Fill in the form and tap Create my content.</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Read every post before you publish. The writing is based only on what you typed above, so check prices, sizes and contact details.</p>
+  </footer>
+
+  <p id="status" class="sr" role="status"></p>
+  <noscript><p class="error" style="margin:20px">This tool needs JavaScript. Turn it on in your browser settings and reload the page.</p></noscript>
+
+  <script src="/poster.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

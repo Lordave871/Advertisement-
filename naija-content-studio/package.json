@@ -1,0 +1,13 @@
+{
+  "name": "naija-content-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI content generator for Nigerian businesses: captions, product descriptions, WhatsApp messages and promo images.",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node test/handler.test.js"
+  }
+}
