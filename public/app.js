@@ -4,7 +4,7 @@
   const $ = (sel, root) => (root || document).querySelector(sel);
   const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const STORE = "ncs.form.v1";
-  const FIELDS = ["businessName", "businessType", "location", "contact", "productName", "details", "price", "platform", "accessCode"];
+  const FIELDS = ["businessName", "businessType", "location", "contact", "productName", "details", "price", "platform"];
   const RADIOS = ["tone", "language"];
 
   const form = $("#form");
@@ -97,7 +97,9 @@
   }
 
   function saveForm(v) {
-    try { localStorage.setItem(STORE, JSON.stringify(v)); } catch (e) { /* storage unavailable */ }
+    const safe = Object.assign({}, v);
+    delete safe.accessCode;
+    try { localStorage.setItem(STORE, JSON.stringify(safe)); } catch (e) { /* storage unavailable */ }
   }
 
   function restore() {
@@ -119,6 +121,7 @@
       const r = form.querySelector('input[name="' + n + '"]:checked');
       v[n] = r ? r.value : "";
     });
+    v.accessCode = form.elements.accessCode ? form.elements.accessCode.value.trim() : "";
     v.price = formatPrice(v.price);
     return v;
   }
@@ -385,4 +388,90 @@
   }
 
   restore();
+
+  /* ---------- helpful workspace tools ---------- */
+  function addWorkspaceTools() {
+    const toolbar = el("div", { class: "workspace-tools", "aria-label": "Form tools" });
+    const sample = el("button", { type: "button", class: "btn small" }, "✦ Try a sample");
+    const clear = el("button", { type: "button", class: "btn small" }, "Clear form");
+    const saved = el("span", { class: "save-indicator", role: "status" }, "Draft saves automatically");
+    toolbar.append(sample, clear, saved);
+    form.insertBefore(toolbar, form.firstChild);
+
+    const meter = el("div", { class: "completion-wrap" },
+      el("div", { class: "completion-copy" },
+        el("span", { text: "Your brief" }),
+        el("strong", { text: "0% complete", id: "completionValue" })),
+      el("div", { class: "completion-track", role: "progressbar", "aria-label": "Form completion", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": "0" },
+        el("span", { class: "completion-fill" })));
+    form.insertBefore(meter, form.querySelector("fieldset"));
+    const fill = $(".completion-fill", meter);
+    const value = $("#completionValue", meter);
+    const track = $(".completion-track", meter);
+
+    function updateMeter() {
+      const required = ["businessName", "productName"];
+      const optional = ["businessType", "details", "price", "contact", "location"];
+      const count = required.filter(n => form.elements[n].value.trim()).length +
+        optional.filter(n => form.elements[n].value.trim()).length;
+      const percent = Math.round(count / (required.length + optional.length) * 100);
+      fill.style.width = percent + "%";
+      value.textContent = percent + "% complete";
+      track.setAttribute("aria-valuenow", String(percent));
+    }
+
+    sample.addEventListener("click", function () {
+      const example = {
+        businessName: "Ade's Fabrics",
+        businessType: "Fashion and tailoring",
+        productName: "Premium Ankara two-piece set",
+        details: "Beautiful prints, comfortable fabric, sizes 8–20. Available for pickup and delivery.",
+        price: "25000",
+        contact: "08030000000",
+        location: "Surulere, Lagos"
+      };
+      Object.keys(example).forEach(n => { if (form.elements[n]) form.elements[n].value = example[n]; });
+      updateMeter();
+      saveForm(readForm());
+      announce("Sample business details added. Edit them to match your business.");
+    });
+    clear.addEventListener("click", function () {
+      form.reset();
+      if (form.elements.accessCode) form.elements.accessCode.value = "";
+      try { localStorage.removeItem(STORE); } catch (e) {}
+      updateMeter();
+      saved.textContent = "Draft cleared";
+      announce("Form cleared");
+    });
+
+    form.addEventListener("input", function () {
+      updateMeter();
+      const v = readForm();
+      saveForm(v);
+      saved.textContent = "Draft saved";
+    });
+    form.addEventListener("change", updateMeter);
+
+    form.querySelectorAll("input[maxlength], textarea[maxlength]").forEach(function (field) {
+      if (field.type === "radio" || field.type === "password" || field.type === "file") return;
+      const counter = el("span", { class: "char-count", "aria-live": "polite" });
+      const update = function () { counter.textContent = field.value.length + " / " + field.maxLength; };
+      field.parentElement.append(counter);
+      field.addEventListener("input", update);
+      update();
+    });
+    updateMeter();
+  }
+
+  function installFocusShortcuts() {
+    document.addEventListener("keydown", function (event) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "enter") {
+        event.preventDefault();
+        if (!busy) form.requestSubmit();
+      }
+    });
+  }
+
+  addWorkspaceTools();
+  installFocusShortcuts();
 })();
